@@ -25,13 +25,20 @@ let persons = [
     }
 ];
 
-app.get('/', (request, response) => {
-    response.send('hi');
-});
 
 app.get('/api/persons', (request, response) => {
     response.json(persons);
 });
+
+app.get('/info', (request, response) => {
+    const numberOfPerson = persons.length;
+    const currTime = Date();
+
+    response.send(`
+    <p>Phonebook has info for ${numberOfPerson} people</p>
+    <p>${currTime}</p>
+    `)
+})
 
 const PORT = 3001;
 app.listen(PORT, () => {
