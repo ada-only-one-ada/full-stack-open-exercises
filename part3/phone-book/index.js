@@ -4,6 +4,19 @@ app.use(express.json());
 
 const morgan = require('morgan');//Import Morgan
 app.use(morgan('tiny')); //Configure Morgan to use the "tiny" preset
+//GET /api/persons 200 223 - 2.256 ms
+//HTTP method, Url, HTTP status code, size of response body in bytes, -, response time
+
+//Define a Custom Token for Logging Request Body:
+//morgan.token('type', function (req, res) { return req.headers['content-type'] })
+//morgan(':method :url :status :res[content-length] - :response-time ms')
+morgan.token('post-data', function (req, res) {
+    if (req.method === 'POST') {
+        return JSON.stringify(req.body);
+    }
+    return '';// Return an empty string for non-POST requests to avoid cluttering the log
+});
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post-data'));
 
 let persons = [
     {
@@ -27,7 +40,6 @@ let persons = [
         "number": "39-23-6423122"
     }
 ];
-
 
 app.get('/api/persons', (request, response) => {
     response.json(persons);
